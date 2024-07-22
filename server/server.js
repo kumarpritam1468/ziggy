@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const connectToDB = require('./config/conn.js');
 
 const foodRoutes = require('./routes/foodRoutes.js');
+const userRoutes = require('./routes/userRoutes.js');
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/api/food', foodRoutes);
+app.use('/api/user', userRoutes);
 app.use('/images', express.static('server/uploads'));
 
 app.listen(PORT, () => {
