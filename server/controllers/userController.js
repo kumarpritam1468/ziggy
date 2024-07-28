@@ -25,7 +25,7 @@ const loginUser = async (req,res) => {
         }
 
         const token = createToken(user._id);
-        res.status(201).json({token});
+        res.status(200).json({token});
     } catch (error) {
         res.status(500).json(error);
     }
@@ -37,15 +37,15 @@ const registerUser = async (req,res) => {
         const {name, email, password} = req.body;
         const exists = await User.findOne({email})
         if(exists){
-            return res.json({message: "User already exists"})
+            return res.status(400).json({error:"User already exists"});
         }
 
         // validating email format & strong password
         if(!validator.isEmail(email)){
-            return res.status(400).json({error: "Please enter a valid email"})
+            return res.status(400).json({error: "Please enter a valid email"});
         }
         if(password.length<8){
-            return res.status(400).json({error: "Please enter a strong password"})
+            return res.status(400).json({error: "Please enter a strong password"});
         }
 
         // hashing user password
@@ -55,12 +55,11 @@ const registerUser = async (req,res) => {
         const newUser = new User({name, email, password: hashedPassword});
         const user = await newUser.save();
         const token = createToken(user._id);
-        res.json({success:true,token})
+        res.status(201).json({token});
 
     } catch(error){
-        console.log(error);
-        res.json({message:"Error"})
+        res.status(500).json(error);
     }
 }
 
-export {loginUser, registerUser}
+module.exports = {registerUser, loginUser};
