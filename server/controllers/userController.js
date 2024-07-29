@@ -25,7 +25,7 @@ const loginUser = async (req,res) => {
         }
 
         const token = createToken(user._id);
-        res.status(200).json({token});
+        res.status(200).json(token);
     } catch (error) {
         res.status(500).json(error);
     }
@@ -55,7 +55,7 @@ const registerUser = async (req,res) => {
         const newUser = new User({name, email, password: hashedPassword});
         const user = await newUser.save();
         const token = createToken(user._id);
-        res.status(201).json({token});
+        res.status(201).json(token);
 
     } catch(error){
         res.status(500).json(error);

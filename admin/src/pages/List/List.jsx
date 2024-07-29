@@ -10,11 +10,12 @@ const List = () => {
 
   const fetchList = async () => {
     const response = await axios.get(`${url}/api/food/all`)
+    console.log(response);
     if (response.data) {
       setList(response.data);
     }
     else {
-      console.log(response);
+      // console.log(response);
       toast.error("Error")
     }
   }
