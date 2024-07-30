@@ -17,7 +17,7 @@ app.use(cors());
 
 app.use('/api/food', foodRoutes);
 app.use('/api/user', userRoutes);
-app.use('/images', express.static('server/uploads'));
+app.use('/api/images', express.static('server/uploads'));
 
 app.listen(PORT, () => {
     console.log(`Server running on PORT: ${PORT}`);

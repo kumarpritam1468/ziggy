@@ -1,45 +1,68 @@
 import { createContext, useEffect, useState } from "react";
-import { food_list,menu_list } from "../assets/assets";
+import { food_list, menu_list } from "../assets/assets";
+import toast from "react-hot-toast";
+import axios from "axios";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
 
     const [token, setToken] = useState('');
-    const [cartItems,setCartItems] = useState({});
-    const [ordersData,setOrdersData] = useState({});
-    
-    const addToCart = (itemId) =>{
-        if(!cartItems[itemId])
-        {
-            setCartItems((prev)=>({...prev,[itemId]:1}));
-        }
-        else{
-            setCartItems((prev)=>({...prev,[itemId]:prev[itemId]+1}));
+    const [cartItems, setCartItems] = useState({});
+    const [ordersData, setOrdersData] = useState({});
+    const [foodList, setFoodList] = useState([]);
+
+    const fetchFoodList = async () => {
+        try {
+            const response = await axios.get('/api/food/all');
+            
+            setFoodList(response.data);
+            console.log(response.data);
+        } catch (error) {
+            toast.error(error.response.data.error);
         }
     }
 
-    const removeFromCart = (itemId) =>{
-        setCartItems((prev)=>({...prev,[itemId]:prev[itemId]-1}))
+    const addToCart = (itemId) => {
+        if (!cartItems[itemId]) {
+            setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
+        }
+        else {
+            setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+        }
     }
-    
+
+    const removeFromCart = (itemId) => {
+        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }))
+    }
+
     const getTotalCartAmount = () => {
         let totalAmount = 0;
         for (const item in cartItems) {
-          if (cartItems[item] > 0) {
-            let itemInfo = food_list.find((product) => product.food_id === Number(item));
-            totalAmount += itemInfo.food_price * cartItems[item];
-          }
+            if (cartItems[item] > 0) {
+                let itemInfo = food_list.find((product) => product.food_id === Number(item));
+                totalAmount += itemInfo.food_price * cartItems[item];
+            }
         }
         return totalAmount;
-      }
+    }
 
-    const placeOrder = (deliveryData) =>{
+    const placeOrder = (deliveryData) => {
 
         console.log(deliveryData);
     }
 
+    useEffect(() => {
+        async function loadData(){
+            if (localStorage.getItem('token')) {
+                setToken(localStorage.getItem('token'));
+            }
+            await fetchFoodList();
+        };
+        loadData();
+    }, []);
+
     const contextValue = {
-        food_list,
+        foodList,
         menu_list,
         cartItems,
         addToCart,
@@ -54,7 +77,7 @@ const StoreContextProvider = (props) => {
         <StoreContext.Provider value={contextValue}>
             {props.children}
         </StoreContext.Provider>
-        )
+    )
 
 }
 
