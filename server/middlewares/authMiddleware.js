@@ -3,14 +3,14 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = async (req, res, next) => {
     const { token } = req.headers;
     if (!token) {
-        return res.json({success:false,message:'Not Authorized Login Again'});
+        return res.status(401).json({error:"Not Authorized"});
     }
     try {
         const token_decode =  jwt.verify(token, process.env.JWT_SECRET);
-        req.body.userId = token_decode.id;
+        req.userId = token_decode.id;
         next();
     } catch (error) {
-        return res.json({success:false,message:error.message});
+        return res.status(500).json(error.message);
     }
 }
 

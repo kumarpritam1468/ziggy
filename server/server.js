@@ -6,6 +6,7 @@ const connectToDB = require('./config/conn.js');
 
 const foodRoutes = require('./routes/foodRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
+const cartRoutes = require('./routes/cartRoutes.js');
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -17,6 +18,7 @@ app.use(cors());
 
 app.use('/api/food', foodRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/images', express.static('server/uploads'));
 
 app.listen(PORT, () => {
