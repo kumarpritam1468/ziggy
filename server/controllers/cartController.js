@@ -35,6 +35,9 @@ const removeFromCart = async (req, res) => {
         if (cartData[itemId] > 0) {
             cartData[itemId]--;
         }
+        if (cartData[itemId] == 0) {
+            delete cartData[itemId];
+        }
 
         await User.findByIdAndUpdate(userId, { cartData });
 
@@ -49,7 +52,10 @@ const getCart = async (req, res) => {
         const userId = req.userId;
         const user = await User.findById(userId);
 
-        const cartData = user.cartData;
+        const cartData = Object.fromEntries(
+            Object.entries(user.cartData).filter(([itemId, quantity]) => quantity > 0)
+        );
+
 
         res.status(200).json(cartData);
     } catch (error) {
